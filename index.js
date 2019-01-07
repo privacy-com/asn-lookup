@@ -76,7 +76,7 @@ async function search(/*int*/ asn, /*enum (String)*/ resultFormat = SEARCH_RESUL
                 // shifting every time, but meh, its fast enough
                 let mask = 32;
                 for (let networkSize = network.end - network.start + 1; networkSize > 1; networkSize>>=1, mask-=1);
-                yield `_ipInt32ToDotDecimal(${network.start})/${mask}`;
+                yield `${_ipInt32ToDotDecimal(network.start)}/${mask}`;
             } else {
                 throw new Error('Invalid result format');
             }
