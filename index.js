@@ -18,11 +18,17 @@
 //      rir(15169)
 //          .then(rir => console.log(rir));
 
+const SEARCH_RESULT_FORMAT = {
+    IP_ADDRESS: 'ipaddress',
+    CIDR: 'cidr'
+};
+
 module.exports = {
     version,
     lookup,
     search,
     rir,
+    SEARCH_RESULT_FORMAT,
 }
 
 const path   = require('path');
@@ -49,7 +55,7 @@ async function lookup(/*String*/ ipAddress) {
 
 /*@throws*/
 /*GeneratorFunction*/
-async function search(/*int*/ asn) {
+async function search(/*int*/ asn, /*enum (String)*/ resultFormat = SEARCH_RESULT_FORMAT.IP_ADDRESS) {
     const db = await _db();
     const rows = await db.all(SQL`
         SELECT p1.prefix AS start,
@@ -61,8 +67,18 @@ async function search(/*int*/ asn) {
 
     function* iterator() {
         for (const network of rows) {
-            for (let ip=network.start;ip<=network.end;++ip) {
-                yield _ipInt32ToDotDecimal(ip);
+            if (resultFormat === SEARCH_RESULT_FORMAT.IP_ADDRESS) {
+                for (let ip=network.start;ip<=network.end;++ip) {
+                    yield _ipInt32ToDotDecimal(ip);
+                }
+            } else if(resultFormat == SEARCH_RESULT_FORMAT.CIDR) {
+                // Calculate the netmask.. We're calculating every mask. We may want to cache powers of 2 instead
+                // shifting every time, but meh, its fast enough
+                let mask = 32;
+                for (let networkSize = network.end - network.start + 1; networkSize > 1; networkSize>>=1, mask-=1);
+                yield `${network.start}/${mask}`;
+            } else {
+                throw new Error('Invalid result format');
             }
         }
     }
