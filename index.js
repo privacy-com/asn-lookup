@@ -20,6 +20,7 @@
 
 const SEARCH_RESULT_FORMAT = {
     IP_ADDRESS: 'ipaddress',
+    IP_RANGE: 'iprange',
     CIDR: 'cidr'
 };
 
@@ -77,6 +78,8 @@ async function search(/*int*/ asn, /*enum (String)*/ resultFormat = SEARCH_RESUL
                 let mask = 32;
                 for (let networkSize = network.end - network.start + 1; networkSize > 1; networkSize>>=1, mask-=1);
                 yield `${_ipInt32ToDotDecimal(network.start)}/${mask}`;
+            } else if(resultFormat == SEARCH_RESULT_FORMAT.IP_RANGE) {
+                yield `${_ipInt32ToDotDecimal(network.start)}-${_ipInt32ToDotDecimal(network.end)}`;
             } else {
                 throw new Error('Invalid result format');
             }
