@@ -32,11 +32,12 @@ module.exports = {
     SEARCH_RESULT_FORMAT,
 }
 
-const path   = require('path');
-const SQL    = require('sql-template-strings');
-const sqlite = require('sqlite');
+const path    = require('path');
+const SQL     = require('sql-template-strings');
+const sqlite  = require('sqlite');
+const sqlite3 = require('sqlite3');
 
-const VERSION = '1.1.0';
+const VERSION = '1.1.1';
 let g_asnDb = null;
 
 /*String*/
@@ -104,7 +105,10 @@ async function rir(/*int*/ asn) {
 /*sqlite3 handle*/
 async function _db() {
     if (!g_asnDb) {
-        g_asnDb = await sqlite.open(path.join(__dirname, 'assets/asns.db'));
+        g_asnDb = await sqlite.open({
+            filename: path.join(__dirname, 'assets/asns.db'),
+            driver: sqlite3.Database
+        });
     }
     return g_asnDb;
 }

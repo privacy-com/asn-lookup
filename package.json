@@ -22,6 +22,7 @@
   "homepage": "https://github.com/privacy-com/asn-lookup#readme",
   "dependencies": {
     "sql-template-strings": "^2.2.2",
-    "sqlite": "^3.0.0"
+    "sqlite": "^4.0.15",
+    "sqlite3": "^5.0.0"
   }
 }
