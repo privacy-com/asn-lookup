@@ -23,6 +23,6 @@
   "dependencies": {
     "sql-template-strings": "^2.2.2",
     "sqlite": "^4.0.15",
-    "sqlite3": "^5.0.0"
+    "sqlite3": "^5.0.3"
   }
 }
